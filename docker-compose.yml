@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  mysql1:
+    image: mysql:5.7
+    container_name: db1
+    volumes:
+    - ./dbfiles:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+  react_project:
+    build: .
+    container_name: r1
+    ports:
+    - "80:3000"
+    volumes:
+    - .:/app
+    stdin_open: true
+    tty: true
+  datastore_node:
+    build: .
+    container_name: ds1
+    ports:
+    - "81:8080"
+    volumes:
+    - .:/app
+    depends_on:
+      mysql1:
+        condition: service_started
+    stdin_open: true
+    tty: true
