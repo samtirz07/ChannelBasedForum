@@ -30,11 +30,7 @@ export const CreatePost = (props) => {
             body: `chName=${props.chName}&topic=${getTopic}&text=${getData}&userID=${props.userID}`, 
             headers: {'Content-type': 'application/x-www-form-urlencoded'}})
         .then(response => response.json())
-        // .then(function(response) {
-        //     let postID = response.data.postID;
-        //     alert('Post created with ID: ' + postID);
-        //     return response;
-        // })
+        .then(response => console.log(response.postID))
         .then(alert(`Post created with Topic: ${getTopic}, Text: ${getData}`))
         .catch(error => console.error(error))
         
