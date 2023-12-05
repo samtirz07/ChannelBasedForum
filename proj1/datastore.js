@@ -10,6 +10,7 @@ const multer = require('multer');
 const path = require('path');
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 const cors = require('cors');
 app.use(cors());
@@ -49,6 +50,18 @@ app.post('/uploadImage', upload.single('image'), (req, res) => {
     connection.query(queryIn, [image], (err, result) => {
         if(err) return res.json({Message: "Error"});
         return res.json({Status: "Success"});
+    });
+});
+
+app.post('/getImagesOfPost', (req, res) => {
+    let postID = req.body.postID;
+
+    var queryIn = `SELECT * FROM images WHERE postID = '${postID}'`;
+    connection.query(queryIn, function(error, result) {
+        if(error) console.log(error);
+        console.log(postID);
+        console.log(result);
+        res.send(result); 
     });
 });
 
@@ -98,7 +111,7 @@ app.post('/init', (req, res) => {
 
     connection.query(`CREATE TABLE IF NOT EXISTS images (
         imgID int unsigned NOT NULL auto_increment,
-        img mediumblob NOT NULL,
+        img varchar(500) NOT NULL,
         postID int unsigned NOT NULL,
         PRIMARY KEY(imgID)
     )`, function(error, result) {

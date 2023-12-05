@@ -13,7 +13,7 @@ import { ViewChannels } from './pages/ViewChannels';
 import { CreateChannel } from './pages/CreateChannel';
 import { Channel } from './pages/Channel';
 // import { PostPage } from './pages/PostPage';
-// import { FileUpload } from './components/FileUpload';
+//import { FileUpload } from './components/FileUpload';
 
 
 function App() {
