@@ -41,8 +41,6 @@ const upload = multer({
 });
 
 app.post('/uploadImage', upload.single('image'), (req, res) => {
-    // console.log(req.file);
-    // console.log(req.body.postID);
     let postID = req.body.postID;
     console.log(postID);
     const image = req.file.filename;
@@ -114,11 +112,78 @@ app.post('/init', (req, res) => {
         img varchar(500) NOT NULL,
         postID int unsigned NOT NULL,
         PRIMARY KEY(imgID)
-    )`, function(error, result) {
+    );`, function(error, result) {
+        if(error) console.log(error);
+    });
+
+    connection.query(`CREATE TABLE IF NOT EXISTS like_dislike (
+        rateID int unsigned NOT NULL auto_increment,
+        userID varchar(100) NOT NULL,
+        postID int unsigned NOT NULL,
+        rating int unsigned NOT NULL,
+        PRIMARY KEY(rateID)
+    );`, function(error, result) {
         if(error) console.log(error);
     });
     
     res.send('Connected to database.');
+});
+
+app.post('/getRating', (req, res) => {
+    let userID = req.body.userID;
+    let postID = req.body.postID;
+
+    var queryIn = `SELECT * FROM like_dislike WHERE userID = '${userID}' AND postID = '${postID}';`;
+    connection.query(queryIn, function(error, result) {
+        if(error) { console.log(error); }
+        console.log('user ID: ' + userID +'. post ID: '+postID);
+        if(result.length < 1) {
+            res.send({rate: 0});
+        }
+        else {
+            console.log('Rating: '+result[0].rating);
+            res.send({rate: result[0].rating});
+        }
+    });
+});
+
+app.post('/setRating', (req, res) => {
+    let userID = req.body.userID;
+    let postID = req.body.postID;
+    let rate = req.body.rate;
+    console.log("set Rating rate: " + rate);
+
+    var queryNew;
+    var queryIn = `SELECT * FROM like_dislike WHERE userID = '${userID}' AND postID = '${postID}';`;
+    connection.query(queryIn, function(error, result) {
+        if(error) {console.log(error)}
+        if(result.length < 1) {
+            queryNew = `INSERT INTO like_dislike (userID, postID, rating) VALUES ('${userID}', '${postID}', '${rate}');`;
+            console.log('neutral -> ?');
+            connection.query(queryNew, function(error, result) {
+                if(error) {console.log(error)}
+            });
+        }
+        else {
+            queryNew = `UPDATE like_dislike SET rating = '${rate}' WHERE userID = '${userID}' AND postID = '${postID}';`;
+            console.log('like <-> dislike');
+            connection.query(queryNew, function(error, result) {
+                if(error) {console.log(error)}
+            });
+        }
+    });
+});
+
+app.post('/getPostLikesDislikes', (req, res) => {
+    let postID = req.body.postID;
+    let rate = req.body.rate;
+
+    var queryIn = `SELECT * FROM like_dislike WHERE postID = '${postID}' AND rating = '${rate}';`;
+    connection.query(queryIn, 
+    function(error,result) {
+        if(error) { console.log(error); }
+        res.send({likes: result.length});
+    });
 });
 
 app.post('/addChannel', (req, res) => {
@@ -211,7 +276,7 @@ app.post('/addReply', (req, res) => {
     function(error,result) {
         if (error) console.log(error);
         let id_d = result.insertId;
-        console.log('Post added to db with ID: '+id_d.toString());
+        res.send({postID: id_d});
     });
 });
 

@@ -44,8 +44,8 @@ export const PostPage = (props) => {
         fetchReplies();
     }, [change, slug]);
 
-    const [getLikes, setLikes] = useState();
-    const [getDislikes, setDislikes] = useState();
+    const [getLikes, setLikes] = useState(0);
+    const [getDislikes, setDislikes] = useState(0);
     const [getMessage, setMessage] = useState('');
     const [userRate, setUserRate] = useState(0); // 0 = no rating, 1 = like, 2 = dislike
 
@@ -61,26 +61,54 @@ export const PostPage = (props) => {
         fetchUserRating();
     }, [slug, userID]);
 
+    function fetchPostLikes() {
+        fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
+        body: `postID=${slug}&rate=1`, 
+        headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+        .then(response => response.json())
+        .then(response => setLikes(response.likes))
+        .catch(error => console.error(error));
+    }
+    function fetchPostDislikes() {
+        fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
+        body: `postID=${slug}&rate=2`, 
+        headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+        .then(response => response.json())
+        .then(response => setDislikes(response.likes))
+        .catch(error => console.error(error));
+    }
+
+    setTimeout(fetchPostDislikes(), 1000);
+    setTimeout(fetchPostLikes(), 1000);
+    
+
+
+    // useEffect(() => {
+    //     function fetchPostLikes() {
+    //         fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
+    //         body: `postID=${slug}&rate=1`, 
+    //         headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+    //         .then(response => response.json())
+    //         .then(response => setLikes(response.likes))
+    //         .catch(error => console.error(error));
+    //     }
+    //     fetchPostLikes();
+    // }, [userRate, slug]);
+
+    // useEffect(() => {
+    //     function fetchPostDislikes() {
+    //         fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
+    //         body: `postID=${slug}&rate=2`, 
+    //         headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+    //         .then(response => response.json())
+    //         .then(response => setDislikes(response.likes))
+    //         .catch(error => console.error(error));
+    //     }
+    //     fetchPostDislikes();
+    // }, [userRate, slug]);
+
     useEffect(() => {
-        function fetchPostLikes() {
-            fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
-            body: `postID=${slug}&rate=1`, 
-            headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-            .then(response => response.json())
-            .then(response => setLikes(response.likes))
-            .catch(error => console.error(error));
-        }
-        function fetchPostDislikes() {
-            fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
-            body: `postID=${slug}&rate=2`, 
-            headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-            .then(response => response.json())
-            .then(response => setDislikes(response.likes))
-            .catch(error => console.error(error));
-        }
         function createMessage() {
-            fetchPostLikes();
-            fetchPostDislikes();
             if(userRate === 0) { setMessage(""); }
             else if(userRate === 1) { setMessage("Liked"); }
             else { setMessage("Disliked"); }
