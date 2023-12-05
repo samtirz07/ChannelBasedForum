@@ -7,10 +7,10 @@ import { CreatePost } from "../components/CreatePost";
 
 export const Channel = (props) => {
 
+    const navigate = useNavigate();
     const { slug } = useParams();
     const [getPosts, setPosts] = useState([]);
     const [getChange, setChange] = useState(0);
-    const navigate = useNavigate();
 
     useEffect(() => {
         function fetchPosts() {
@@ -22,15 +22,20 @@ export const Channel = (props) => {
         fetchPosts();
     }, [getChange, slug]); //getChange
 
+    if(!props.loggedIn) {
+        navigate("/");
+        return (<></>)
+    }
     return (
         <div className="container">
             <button className="btn" onClick={() => navigate(-1)}>
             Go Back
-			</button>
+            </button>
             <h3>{slug}</h3>
             <p>Posts here...</p>
-            <ShowPosts list={getPosts} />
+            <ShowPosts list={getPosts} userID={props.userID}/>
             <CreatePost chName={slug} setChange={setChange} userID={props.userID}/>
         </div>
     )
+
 }

@@ -1,9 +1,16 @@
 import React from 'react';
 import {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const CreateChannel = (props) => {
 
+    const navigate = useNavigate();
     const [getName, setName]  = useState('');
+
+    if(!props.loggedIn) {
+        navigate("/");
+        return (<></>)
+    }
     return(
         <div className="container">
         <h1> Create new channel </h1>

@@ -32,15 +32,6 @@ export const CreatePost = (props) => {
       }
     }
 
-    // const showPic = () => {
-    //   fetch('http://localhost:81/getImagesOfPost', 
-    //       {method: 'POST', body: `postID=${props.postID}`, 
-    //       headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-    //   .then(response => response.json())
-    //   .then(response => setImages(response))
-    //   .catch(error => console.error(error))
-    // }
-
     return(
     <>
     <h3> Create a Post </h3>
@@ -77,11 +68,7 @@ export const CreatePost = (props) => {
         <FileUpload setFile={setFile}/>
         {/* <button onClick={handleUpload}>Upload</button>
         <button onClick={showPic}>Show</button> */}
-        {/* <div>
-          {getImages.map((item) => (
-            <img className="landscape" src={`http://localhost:81/images/`+item.img} alt=""></img>
-          ))}
-        </div> */}
+        
     </>
     );
 }

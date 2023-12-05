@@ -1,8 +1,8 @@
 import React from 'react';
 import Post from './Post';
 
-export const ShowPosts = ({list}) => {
-    if(list.length < 1) {
+export const ShowPosts = (props) => {
+    if(props.list.length < 1) {
         return (
             <>
             <p>*** No Posts ***</p>
@@ -11,8 +11,8 @@ export const ShowPosts = ({list}) => {
     }
     return (
     <div>
-        {list.map((props) => (
-        <Post item={props}> </Post>)
+        {props.list.map((item) => (
+        <Post item={item} userID={props.userID}> </Post>)
         )}
     </div>)
 }

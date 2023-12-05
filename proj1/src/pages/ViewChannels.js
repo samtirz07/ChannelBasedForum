@@ -16,14 +16,8 @@ import { Link, useNavigate } from "react-router-dom";
 //     return channel_list;
 // }
 
-export const ViewChannels = () => {
-    // let channelList = getChannels();
-
-    // if(channelList.length < 1) {
-    //     return (
-    //         <i>***No Channels made yet***</i>
-    //     )
-    // }
+export const ViewChannels = (props) => {
+    
     const navigate = useNavigate();
     const [getList, setList] = useState([]);
 
@@ -42,17 +36,21 @@ export const ViewChannels = () => {
             <div>
             <button className="btn" onClick={() => navigate(-1)}>
             Go Back
-			</button>
+            </button>
             <i>***No Channels made yet***</i>
             </div>
         )
     }
 
+    if(!props.loggedIn) {
+        navigate("/");
+        return (<></>)
+    }
     return (
         <div className="container">
             <button className="btn" onClick={() => navigate(-1)}>
             Go Back
-			</button>
+            </button>
             <h1>Channels:</h1>
             <ul>
                 {getList.map((item) => (
@@ -65,5 +63,4 @@ export const ViewChannels = () => {
             </ul>
         </div>
     )
-
 }
