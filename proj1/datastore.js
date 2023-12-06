@@ -8,12 +8,18 @@ const app = express();
 const bodyParser = require("body-parser");
 const multer = require('multer');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(cookieParser());
 
 const cors = require('cors');
-app.use(cors());
+var corOptions = {
+    origin: 'http://localhost',
+    credentials: true
+};
+app.use(cors(corOptions));
 
 const PORT = 8080;
 const HOST = '0.0.0.0';
@@ -26,6 +32,8 @@ var connection = mysql.createConnection({
     password: 'admin'
 });
 connection.connect();
+
+// var user = {};
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -89,7 +97,6 @@ app.post('/init', (req, res) => {
         userID varchar(100) NOT NULL,
         PRIMARY KEY (chName)
     );`, 
-    // chID int unsigned NOT NULL auto_increment,
     function(error,result) {
         if (error) console.log(error);
     });
@@ -128,6 +135,44 @@ app.post('/init', (req, res) => {
     
     res.send('Connected to database.');
 });
+
+app.get('/getCookie', (req, res) => {
+    var cookie_req = req.cookies;
+    if(cookie_req.mycookie == undefined) {
+        console.log("get cookie ds: "+ null);
+        res.send({data: null});
+    }
+    else {
+        console.log("get cookie ds: ");
+        console.log(cookie_req.mycookie);
+        //console.log(cookie_req.mycookie == undefined);
+        res.send({data: cookie_req.mycookie});
+    }
+});
+
+app.post('/setCookie', (req, res) => {
+    let userID = req.body.userID;
+    let password = req.body.password;
+    let user = { ID: userID, password: password };
+
+    res.cookie('mycookie', user, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: 'lax'
+    });
+    console.log("set cookie ds: ");
+    console.log(user);
+    //res.send({ message: 'Cookie has been saved successfully.'});
+    res.sendStatus(200);
+});
+
+app.get('/deleteCookie', (req, res) => {
+    console.log("delete cookie ds.")
+    res.clearCookie('mycookie');
+    //res.send({ message: 'Cookies cleared.'});
+    res.sendStatus(200);
+});
+
 
 app.post('/getRating', (req, res) => {
     let userID = req.body.userID;

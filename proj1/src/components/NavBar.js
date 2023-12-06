@@ -1,11 +1,24 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-// import '../index.css';
-
 
 export const NavBar = (props) => {
 
    const navigate = useNavigate();
+
+   function deleteLoginInfo() {
+      fetch('http://localhost:81/deleteCookie', {method: 'GET', credentials: 'include',
+      headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+      .then(function(response) {
+         if(response.status === 200) {
+             console.log("Delete cookie success.");
+         }
+         else {
+             console.log("Delete cookie failed.");
+         }
+     })
+      // .then(response => console.log("delete cookie: "+ response))
+      .catch(error => console.error(error));
+   }
    
    if(props.loggedIn) {
       return (
@@ -28,6 +41,7 @@ export const NavBar = (props) => {
                   props.setUserID('');
                   props.setName('');
                   props.setLoggedIn(false);
+                  deleteLoginInfo();
                   navigate("/");}}>
                   Sign out
                </button>

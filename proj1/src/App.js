@@ -1,6 +1,3 @@
-// import './App.css';
-// import './index1.css';
-
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -13,8 +10,6 @@ import { ViewChannels } from './pages/ViewChannels';
 import { CreateChannel } from './pages/CreateChannel';
 import { Channel } from './pages/Channel';
 import { PostPage } from './pages/PostPage';
-//import { FileUpload } from './components/FileUpload';
-
 
 function App() {
   
@@ -27,7 +22,7 @@ function App() {
           <Router>
             <NavBar loggedIn={loggedIn} setLoggedIn={setLoggedIn} setUserID={setUserID} name={name} setName={setName}/>
             <Routes>
-              <Route exact path="/" element={<Landing loggedIn={loggedIn} name={name}/>} />
+              <Route exact path="/" element={<Landing loggedIn={loggedIn} name={name} setLoggedIn={setLoggedIn} setID={setUserID} setName={setName}/> } />
               <Route path="*" element={<NoMatch />}/>
 
               <Route path="/login" element={<Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} setID={setUserID} setName={setName}/> } />
