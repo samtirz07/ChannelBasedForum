@@ -80,32 +80,6 @@ export const PostPage = (props) => {
 
     setTimeout(fetchPostDislikes(), 1000);
     setTimeout(fetchPostLikes(), 1000);
-    
-
-
-    // useEffect(() => {
-    //     function fetchPostLikes() {
-    //         fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
-    //         body: `postID=${slug}&rate=1`, 
-    //         headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-    //         .then(response => response.json())
-    //         .then(response => setLikes(response.likes))
-    //         .catch(error => console.error(error));
-    //     }
-    //     fetchPostLikes();
-    // }, [userRate, slug]);
-
-    // useEffect(() => {
-    //     function fetchPostDislikes() {
-    //         fetch('http://localhost:81/getPostLikesDislikes', {method: 'POST', 
-    //         body: `postID=${slug}&rate=2`, 
-    //         headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-    //         .then(response => response.json())
-    //         .then(response => setDislikes(response.likes))
-    //         .catch(error => console.error(error));
-    //     }
-    //     fetchPostDislikes();
-    // }, [userRate, slug]);
 
     useEffect(() => {
         function createMessage() {
@@ -139,6 +113,7 @@ export const PostPage = (props) => {
                 <div>
                 <Post item={item}></Post>
 
+                <div className="button-case">
                 <p>{getLikes} </p>
                 <button className="like" onClick={(e) => {handleRating(1)}}>
                     <img src="https://cdn-icons-png.flaticon.com/512/2415/2415418.png" alt="buttonpng" border="0"></img>
@@ -148,6 +123,8 @@ export const PostPage = (props) => {
                     <img src="https://cdn-icons-png.flaticon.com/512/1633/1633636.png" alt="buttonpng" border="0"></img>
                 </button>
                 <p>{getMessage}</p>
+                </div>
+
                 <div>
                     {getImages.map((item) => (
                     <img className="landscape" src={`http://localhost:81/images/`+item.img} alt=""></img>
@@ -156,7 +133,7 @@ export const PostPage = (props) => {
 
                 <CreateReply ppost={item} setChange={setChange} userID={props.userID}/>
                 <h3>Past Replies:</h3>
-                <ShowPosts list={getReplies} userID={props.userID}/>
+                <ShowPosts list={getReplies} userID={props.userID} setChange={setChange}/>
                 </div>)
             )}
         </div>

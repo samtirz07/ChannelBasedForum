@@ -16,8 +16,41 @@ export const NavBar = (props) => {
              console.log("Delete cookie failed.");
          }
      })
-      // .then(response => console.log("delete cookie: "+ response))
       .catch(error => console.error(error));
+   }
+
+   if(props.userID == 'admin123') {
+      return (
+         <div>
+         <nav>
+         <div className="nav-items container">
+               <ul>
+                  <li>
+                     <NavLink to="/">Landing</NavLink>
+                  </li>
+                  <li>
+                     <NavLink to="/viewChannels">View Channels</NavLink>
+                  </li>
+                  <li>
+                     <NavLink to="/createChannel">Create new channel</NavLink>
+                  </li>
+                  <li>
+                     <NavLink to="/users">Users</NavLink>
+                  </li>
+               </ul>
+               <h3>User: {props.name}</h3>
+               <button className="btn" onClick={() => {
+                  props.setUserID('');
+                  props.setName('');
+                  props.setLoggedIn(false);
+                  deleteLoginInfo();
+                  navigate("/");}}>
+                  Sign out
+               </button>
+         </div>
+         </nav>
+         </div>
+         );
    }
    
    if(props.loggedIn) {

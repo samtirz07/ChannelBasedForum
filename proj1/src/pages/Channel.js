@@ -33,7 +33,7 @@ export const Channel = (props) => {
             </button>
             <h3>{slug}</h3>
             <p>Posts here...</p>
-            <ShowPosts list={getPosts} userID={props.userID}/>
+            <ShowPosts list={getPosts} userID={props.userID} setChange={setChange}/>
             <CreatePost chName={slug} setChange={setChange} userID={props.userID}/>
         </div>
     )

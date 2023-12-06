@@ -8,16 +8,14 @@ export const SignUp = ({loggedIn}) => {
     const [getUserName, setUsername] = useState('');
     const [getPassword, setPassword] = useState('');
 
-    function userExists() {
-      fetch('http://localhost:81/getUser', {method: 'POST', body: `userID=${getUserID}`, 
+    async function userExists() {
+      let result = await fetch('http://localhost:81/getUser', {method: 'POST', body: `userID=${getUserID}`, 
           headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-      .then(response => response.json())
-      .then(function(response) {
-        return response.length > 0;
-      })
+      .then(response => response.json());
+      return result.length > 0;
     }
     
-    const onButtonClick = () => {
+    async function onButtonClick() {
       let validChars = /^[a-zA-Z0-9_.]+$/;
       let passInvalidChar = / /;
       if(getUserID === "") {
@@ -36,7 +34,7 @@ export const SignUp = ({loggedIn}) => {
         alert("Password cannot have a space.");
         return;
       }
-      else if(userExists()) {
+      else if(await userExists()) {
         alert("User ID is taken.");
         return;
       }
@@ -88,7 +86,7 @@ export const SignUp = ({loggedIn}) => {
             onChange={e => setUsername(e.target.value)} />
         </div>
 
-        <button onClick={onButtonClick}>Create account</button>
+        <button onClick={(e) => {onButtonClick()}}>Create account</button>
       </div>
     )
 

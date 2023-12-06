@@ -7,6 +7,15 @@ export const CreateChannel = (props) => {
     const navigate = useNavigate();
     const [getName, setName]  = useState('');
 
+    async function checkChannel() {
+        let result = await fetch('http://localhost:81/channelExists', 
+            {method: 'POST', body: `chName=${getName}`, 
+            headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+        .then(response => response.json());
+        // .catch(error => console.error(error))
+        return result.length > 0;
+    }
+
     if(!props.loggedIn) {
         navigate("/");
         return (<></>)
@@ -26,6 +35,9 @@ export const CreateChannel = (props) => {
 
                 if(getName.length < 1){
                     alert("Please enter the new channel's name.");
+                }
+                else if (checkChannel()) {
+                    alert("Channel already exists.");
                 }
                 else {
                 fetch('http://localhost:81/addChannel', 

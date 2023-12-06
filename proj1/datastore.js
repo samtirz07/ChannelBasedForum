@@ -92,6 +92,12 @@ app.post('/init', (req, res) => {
         if (error) console.log(error);
     });
 
+    connection.query(`INSERT INTO users (userID, userName, password) 
+        VALUES ('admin123', 'admin', 'adminPass');`, 
+    function(error, result) {
+        if(error) {console.log(error)}
+    });
+
     connection.query(`CREATE TABLE IF NOT EXISTS channels (
         chName varchar(100) NOT NULL,
         userID varchar(100) NOT NULL,
@@ -105,7 +111,7 @@ app.post('/init', (req, res) => {
         postID int unsigned NOT NULL auto_increment, 
         ppostID int unsigned, 
         chName varchar(100) NOT NULL,
-        userID varchar(100) NOT NULL,
+        userID varchar(100) NOT NULL,d
         topic varchar(100),
         data varchar(500) NOT NULL,
         PRIMARY KEY (postID) 
@@ -249,6 +255,7 @@ app.post('/getChannels', (req, res) => {
     connection.query(queryIn, 
     function(error,result) {
         if(error) console.log(error);
+        console.log("get channels.");
         res.send(result);
     });
 });
@@ -260,7 +267,7 @@ app.post('/channelExists', (req, res) => {
     connection.query(queryIn, 
     function(error,result) {
         if(error) console.log(error);
-        res.send(result.length > 0);
+        res.send(result);
         console.log(result);
     });
 });
@@ -380,6 +387,112 @@ app.post('/loginUser', (req, res) => {
             console.log(result);
             res.send(result);
         }
+    });
+});
+
+app.post('/getAllUsers', (req, res) => {
+    var queryIn = `SELECT * FROM users WHERE userID != 'admin123';`;
+    connection.query(queryIn, 
+    function(error, result) {
+        if(error) { console.log(error); }
+        else {
+            console.log("got all users.");
+            res.send(result);
+        }
+    });
+});
+
+app.post('/deleteUser', (req, res) => {
+    let userID = req.body.userID;
+
+    var queryIn = `DELETE FROM users WHERE userID='${userID}';`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted user with ID:"+userID);
+            }
+    });
+});
+
+app.post('/deleteChannel', (req, res) => {
+    let chName = req.body.chName;
+
+    var queryIn = `DELETE li FROM like_dislike li WHERE li.postID in (SELECT p.postID FROM posts p where p.chName = '${chName}');`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted likes and dislikes of posts in channel:"+chName);
+            }
+    });
+
+    queryIn = `DELETE i FROM images i WHERE i.postID in (SELECT p.postID FROM posts p where p.chName = '${chName}');`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted images of posts in channel:"+chName);
+            }
+    });
+
+    queryIn = `DELETE FROM posts WHERE chName = '${chName}';`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted posts in channel:"+chName);
+            }
+    });
+
+    queryIn = `DELETE FROM channels WHERE chName = '${chName}';`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted channel:"+chName);
+            }
+    });
+    console.log("Deleted channel: " + chName)
+});
+
+app.post('/deletePostReply', (req, res) => {
+    let postID = req.body.postID;
+
+    var queryIn = `DELETE FROM images WHERE postID = '${postID}';`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted images of post with ID:"+postID);
+            }
+    });
+
+    queryIn = `DELETE FROM like_dislike WHERE postID = '${postID}';`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted rating of post with ID:"+postID);
+            }
+    });
+
+    queryIn = `DELETE FROM posts WHERE ppostID = '${postID}';`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted replies of post with ID:"+postID);
+            }
+    });
+
+    queryIn = `DELETE FROM posts WHERE postID = '${postID}';`;
+    connection.query(queryIn, 
+        function(error, result) {
+            if(error) { console.log(error); }
+            else {
+                console.log("Deleted post with ID:"+postID);
+            }
     });
 });
 
