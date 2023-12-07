@@ -7,6 +7,23 @@ export const CreateChannel = (props) => {
     const navigate = useNavigate();
     const [getName, setName]  = useState('');
 
+    async function onCreateClick () {
+        if(getName.length < 1){
+            alert("Please enter the new channel's name.");
+        }
+        else if (await checkChannel()) {
+            alert("Channel already exists.");
+        }
+        else {
+        fetch('http://localhost:81/addChannel', 
+            {method: 'POST', body: `chName=${getName}&userID=${props.userID}`, 
+            headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+        .then(response => response.json())
+        .then(alert(`Channel '${getName}' created.`))
+        .catch(error => console.error(error))
+        }
+    }
+
     async function checkChannel() {
         let result = await fetch('http://localhost:81/channelExists', 
             {method: 'POST', body: `chName=${getName}`, 
@@ -31,24 +48,7 @@ export const CreateChannel = (props) => {
                 onChange={e => setName(e.target.value)} />
             </div>
     
-            <button onClick={(e) => {
-
-                if(getName.length < 1){
-                    alert("Please enter the new channel's name.");
-                }
-                else if (checkChannel()) {
-                    alert("Channel already exists.");
-                }
-                else {
-                fetch('http://localhost:81/addChannel', 
-                    {method: 'POST', body: `chName=${getName}&userID=${props.userID}`, 
-                    headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-                .then(response => response.json())
-                .then(alert(`Channel Name: ${getName}`))
-                .catch(error => console.error(error))
-                }
-            } 
-            }> Create </button>
+            <button onClick={(e) => {onCreateClick()}}> Create </button>
         </div>
         );
 }

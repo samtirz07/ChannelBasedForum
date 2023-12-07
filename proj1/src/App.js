@@ -10,6 +10,7 @@ import { ViewChannels } from './pages/ViewChannels';
 import { CreateChannel } from './pages/CreateChannel';
 import { Channel } from './pages/Channel';
 import { PostPage } from './pages/PostPage';
+import { Users } from './pages/Users';
 
 function App() {
   
@@ -20,7 +21,7 @@ function App() {
   return (
       <div>
           <Router>
-            <NavBar loggedIn={loggedIn} setLoggedIn={setLoggedIn} setUserID={setUserID} name={name} setName={setName}/>
+            <NavBar loggedIn={loggedIn} setLoggedIn={setLoggedIn} setUserID={setUserID} name={name} setName={setName} userID={userID}/>
             <Routes>
               <Route exact path="/" element={<Landing loggedIn={loggedIn} name={name} setLoggedIn={setLoggedIn} setID={setUserID} setName={setName}/> } />
               <Route path="*" element={<NoMatch />}/>
@@ -28,10 +29,12 @@ function App() {
               <Route path="/login" element={<Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} setID={setUserID} setName={setName}/> } />
               <Route path="/signUp" element={<SignUp loggedIn={loggedIn} />} />
 
-              <Route path="/viewChannels" element={<ViewChannels loggedIn={loggedIn}/>} />
+              <Route path="/viewChannels" element={<ViewChannels userID={userID} loggedIn={loggedIn}/>} />
               <Route path="/viewChannels/:slug" element={<Channel userID={userID} loggedIn={loggedIn}/>} />
               <Route path="/createChannel" element={ <CreateChannel userID={userID} loggedIn={loggedIn}/> } />
               <Route path="/posts/:slug" element={<PostPage userID={userID} loggedIn={loggedIn}/>} />
+
+              <Route path="/users" element={<Users userID={userID} loggedIn={loggedIn}/>} />
 
             </Routes>
           </Router>

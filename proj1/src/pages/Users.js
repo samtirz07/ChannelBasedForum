@@ -18,8 +18,8 @@ export const Users = ({userID, loggedIn}) => {
         fetchUsers();
     }, [count]);
 
-    function handleDeleteUser(userID) {
-        fetch('http://localhost:81/deleteUser', {method: 'POST', body: `userID=${userID}`, 
+    async function handleDeleteUser(userID) {
+        await fetch('http://localhost:81/deleteUser', {method: 'POST', body: `userID=${userID}`, 
         headers: {'Content-type': 'application/x-www-form-urlencoded'}})
         .then(response => response.json())
         .then(setCount((c)=> c+1))

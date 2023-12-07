@@ -22,7 +22,7 @@ export const ShowPosts = (props) => {
         )
     }
 
-    if(props.userID == 'admin123') {
+    if(props.userID === 'admin123') {
         return (
         <div>
             <input className="searchBar" 
@@ -30,7 +30,7 @@ export const ShowPosts = (props) => {
                 placeholder="Search..."
                 onChange={(e) => {setSearchTerm(e.target.value)}}/>
             {props.list.filter((item) => {
-                if(searchTerm == '') {
+                if(searchTerm === '') {
                     return item
                 }
                 else if ((item.topic !== null && item.topic.toLowerCase().includes(searchTerm.toLowerCase())) || 
@@ -55,7 +55,7 @@ export const ShowPosts = (props) => {
             placeholder="Search..."
             onChange={(e) => {setSearchTerm(e.target.value)}}/>
         {props.list.filter((item) => {
-                if(searchTerm == '') {
+                if(searchTerm === '') {
                     return item
                 }
                 else if ((item.topic !== null && item.topic.toLowerCase().includes(searchTerm.toLowerCase())) || 

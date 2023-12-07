@@ -5,19 +5,26 @@ import axios from 'axios'
 export const CreatePost = (props) => {
     const [getTopic, setTopic]  = useState('');
     const [getData, setData]  = useState('');
-    //const [getPostID, setPostID] = useState();
 
     const [getFile, setFile] = useState();
-    //const [getImages, setImages] = useState([]);
-    //let postID = props.postID;
+
+    async function handleSubmit() {
+        await fetch('http://localhost:81/addPost', {method: 'POST', 
+            body: `chName=${props.chName}&topic=${getTopic}&text=${getData}&userID=${props.userID}`, 
+            headers: {'Content-type': 'application/x-www-form-urlencoded'}})
+        .then(response => response.json())
+        .then(response => handleUpload(response.postID))
+        //.then(alert(`Post created with Topic: ${getTopic}, Text: ${getData}`))
+        .catch(error => console.error(error));
+    }
     
-    function handleUpload(postID) {
+    async function handleUpload(postID) {
       console.log(typeof getFile === 'undefined');  // returns true when no file uploaded
       if(typeof getFile !== 'undefined') {
         const formdata = new FormData();
         formdata.append('image', getFile);
         formdata.append('postID', postID);
-        axios.post('http://localhost:81/uploadImage', formdata)
+        await axios.post('http://localhost:81/uploadImage', formdata)
         .then(response => {
             if(response.data.Status === "Success") {
                 console.log("Succeded");
@@ -50,24 +57,11 @@ export const CreatePost = (props) => {
         </div>
 
         <button onClick={(e) => {
-
-        fetch('http://localhost:81/addPost', {method: 'POST', 
-            body: `chName=${props.chName}&topic=${getTopic}&text=${getData}&userID=${props.userID}`, 
-            headers: {'Content-type': 'application/x-www-form-urlencoded'}})
-        .then(response => response.json())
-        .then(response => handleUpload(response.postID))
-        //.then(response => setPostID(response.postID)) //console.log(response.postID)
-        .then(alert(`Post created with Topic: ${getTopic}, Text: ${getData}`))
-        .catch(error => console.error(error))
-        
-        props.setChange((c) => c + 1);
+            handleSubmit();
+            props.setChange((c) => c + 1);
         }
         }>Submit</button>
-        
-        <FileUpload setFile={setFile}/>
-        {/* <button onClick={handleUpload}>Upload</button>
-        <button onClick={showPic}>Show</button> */}
-        
+        <FileUpload setFile={setFile}/>        
     </>
     );
 }
